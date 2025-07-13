@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script type="module">
+      import {
+        HyperJSGraph as DirectedHypergraph,
+        HyperJSNode as Node,
+        HyperJSEdge as Edge
+      } from "../src/HyperJS.js";
+
+      const graph = new DirectedHypergraph({
+        label: "Apollo Missions",
+        type: "Space Program",
+      });
+
+      const apollo11ID = graph.addNode({ label: "Apollo-11" });
+      graph.addNode({
+        id: "neil",
+        label: "Neil Armstrong",
+        metadata: { role: "Commander" },
+      });
+      graph.addNode({ id: "buzz", label: "Buzz Aldrin" });
+      graph.addNode({ id: "michael", label: "Michael Collins" });
+
+      graph.addEdge({
+        id: "crew11",
+        source: apollo11ID,
+        target: ["neil", "buzz", "michael"],
+      });
+      graph.updateNodeMetadata("buzz", { role: "Lunar Module Pilot" });
+
+      const apollo12ID = graph.addNode({ label: "Apollo-12" });
+      graph.addNode({
+        id: "pete",
+        label: "Pete Conrad",
+        metadata: { role: "Commander" },
+      });
+      graph.addNode({ id: "alan", label: "Alan L. Bean" });
+      graph.addNode({ id: "richard", label: "Richard F. Gordon" });
+
+      graph.addEdge({
+        id: "crew12",
+        source: apollo12ID,
+        target: ["pete", "alan", "richard"],
+      });
+      graph.updateNodeMetadata("alan", { role: "Lunar Module Pilot" });
+      graph.updateNodeMetadata("richard", { role: "Command Module Pilot" });
+
+      const apollo13ID = graph.addNode({ label: "Apollo-13" });
+      graph.addNode({
+        id: "jim",
+        label: "Jim Lovell",
+        metadata: { role: "Commander" },
+      });
+      graph.addNode({ id: "fred", label: "Fred Haise" });
+      graph.addNode({ id: "jack", label: "Jack Swigert" });
+
+      graph.addEdge({
+        id: "crew13",
+        source: apollo13ID,
+        target: ["jim", "fred", "jack"],
+      });
+      graph.updateNodeMetadata("fred", { role: "Lunar Module Pilot" });
+      graph.updateNodeMetadata("jack", { role: "Command Module Pilot" });
+
+      graph.addNode({ id: "moon", label: "Moon Surface" });
+      graph.addEdge({
+        id: "moonwalkers",
+        source: "moon",
+        target: ["neil", "buzz", "pete", "alan"],
+      });
+
+      console.log(JSON.stringify(graph.toJSON(), null, 2));
+
+      console.log(graph.hasNode("neil")); // true
+      console.log(graph.hasEdge("crew11")); // true
+
+      console.log(graph.getIncomingEdges("neil")); // [crew11]
+      console.log(graph.getOutgoingEdges(apollo11ID)); // [crew11]
+      console.log(graph.getIncidentEdges("buzz")); // [crew11, moonwalkers]
+
+      console.log(graph.getNeighbors("moon")); // ['neil', 'buzz', 'pete', 'alan']
+      console.log(graph.getSources("moonwalkers")); // ['moon']
+      console.log(graph.getTargets("moonwalkers")); // ['neil', 'buzz', 'pete', 'alan']
+    </script>
+  </head>
+  <body>
+    Core Graph Manipulation ✅ Already implemented: addNode, addEdge
+    updateNodeMetadata removeNode, removeEdge getNode, getEdge 🆕 Suggested
+    additions: renameNode(id, newId): Change a node’s identifier (with edge
+    updates) renameEdge(id, newId): Change an edge’s identifier
+    updateEdgeMetadata(edgeId, newMetadata): Update metadata for a hyperedge
+    updateEdgeRelation(edgeId, newRelation): Modify the relation string clone():
+    Deep copy of the graph merge(otherGraph): Merge another DirectedHypergraph
+    into this one
+  </body>
+</html>
