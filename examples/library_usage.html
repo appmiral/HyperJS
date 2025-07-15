@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyperJs library usage</title>
+    <script type="module">
+
+
+      // Import graph visualization classes from HyperJS 
+      import {
+        HyperJSGraph,
+        HyperJSNode,
+        HyperJSEdge,
+      } from "../src/HyperJSStriped.js";
+
+      // Import custom project management library definitions
+      import { ProjectManagement } from "./libraries/ProjectManagement.js";
+
+      // Initialize a new project graph with type and label
+      const graph = new HyperJSGraph({ type: "pm", label: "Acme Projects" });
+
+      // Bulk‐register everything under the “projectmanagement” namespace:
+      graph.registerLibrary("projectmanagement", ProjectManagement);
+
+      // Now you can add nodes and edges from the library to your graph, by using its prefix
+      const apollo = graph.addNode({
+        type: "projectmanagement.project",
+        label: "Apollo",
+        budget: 1_000_000,
+        deadline: "2025-12-31",
+      });
+
+      const task123 = graph.addNode({
+        type: "projectmanagement.task",
+        label: "Design Logo",
+        assignee: "Alice",
+        status: "in_progress",
+      });
+
+      const task124 = graph.addNode({
+        type: "projectmanagement.task",
+        label: "Design Website",
+        assignee: "Alice",
+        status: "in_progress",
+      });
+
+      graph.addEdge({
+        relation: "projectmanagement.owns",
+        source: apollo,
+        target: task123,
+      });
+
+      graph.addEdge({
+        relation: "projectmanagement.dependsOn",
+        source: task123,
+        target: task124,
+        critical: true,
+      });
+
+      // printing the graph
+      document.getElementById("ouput").textContent = JSON.stringify(
+        graph.toJSON(),
+        null,
+        2
+      );
+    </script>
+  </head>
+  <body>
+    <pre id="ouput"></pre>
+  </body>
+</html>

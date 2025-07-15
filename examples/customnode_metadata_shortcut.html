@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metadata Shortcut Implementation</title>
+    <script type="module">
+      import { HyperJSGraph, HyperJSNode } from "../src/HyperJSStriped.js";
+
+      // initialize this directed hypergraph
+      const graph = new HyperJSGraph({ type: "lineage", label: "Genealogy" });
+
+      // with a node like this:
+      class LocationNode extends HyperJSNode {
+        static _config = {
+          isMetadataStrict: true,
+          metaSchema: {
+            region: { type: "string", default: "" }, // this locations region
+          },
+        };
+      }
+
+      // Register node types that can represent locations on this planet
+      graph.registerNodeType("location", LocationNode);
+
+      // you can set the region at the config objects root. internaly it will be within the metadata. It is just a shortcut for developers
+      graph.addNode({
+        type: "location",
+        label: "Home",
+        region: "North America",
+      });
+
+      // will result in the same node as
+      graph.addNode({
+        type: "location",
+        label: "Home",
+        metadata: { region: "North America" },
+      });
+
+      // in case you mix it, metadata will win: region will be set to: 'North America'
+      graph.addNode({
+        type: "location",
+        label: "Home",
+        region: "Europe",
+        metadata: { region: "North America" },
+      });
+
+      // on unknown types or the default node, it will be ignored
+      graph.addNode({
+        type: "unknownType",
+        label: "Home",
+        region: "Europe",
+      });
+
+      // printing the graph
+      document.getElementById("ouput").textContent = JSON.stringify(
+        graph.toJSON(),
+        null,
+        2
+      );
+    </script>
+  </head>
+  <body>
+    <pre id="ouput"></pre>
+  </body>
+</html>
