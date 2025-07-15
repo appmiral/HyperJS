@@ -8,7 +8,7 @@
  *  - Extensible via HyperJSGraph, HyperJSNode, and HyperJSEdge classes
  *  - Supports schema-based metadata validation
  */
-export class HyperJSGraph {
+export class HyperJSGraph extends EventTarget {
 
   static _config = {
     version: "0.0",
@@ -19,6 +19,9 @@ export class HyperJSGraph {
 
   // Creates a new hypergraph instance with optional configuration
   constructor({ id, label = '', type = '', directed = true, metadata = {} } = {}) {
+
+    super(); // Call the EventTarget constructor
+
     this.id = id || this.generateId();
     this.label = label;
     this.type = type;
